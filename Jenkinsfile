@@ -1,35 +1,29 @@
 pipeline {
-  // Consider using a dedicated agent or labels for controlled execution
-  agent any
+    agent any
+    stages {
+            stage('Build') {
+            steps {
+                build 'pes1ug21cs404-1'
+                sh 'g++ cccc.cpp -o output'
+            }
+        }
 
-  stages {
-    stage('Build') {
-  steps {
-    noCache true  // Disable caching for this step
-    build 'PES1UG21CS419-1'
-    // ... (rest of your build steps)
-  }
-}
+        stage('Test') {
+            steps {
+                sh './output'
+            }
+        }
 
-    stage('Test') {
-      steps {
-        // Execute the test and check for failures (e.g., exit code or output parsing)
-        sh './output'
-      }
+        stage('Deploy') {
+            steps {
+                echo 'deploy'
+            }
+        }
     }
 
-    stage('Deploy') {
-      steps {
-        echo 'deploy'
-      }
+    post {
+        failure {
+            error 'Pipeline failed'
+        }
     }
-  }
-
-  post {
-    failure {
-      // Provide more informative error message
-      error '''Pipeline failed. 
-      Check the stage and step logs for details.'''
-    }
-  }
 }
